@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Custom Kitchen</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Custom Kitchen</h1>
+  <button id="extractBtn">Extract Recipe</button>
+
+  <select id="customizationSelect">
+    <option value="make this vegan">Make Vegan</option>
+    <option value="remove dairy ingredients">Remove Dairy</option>
+    <option value="make gluten-free">Make Gluten-Free</option>
+    <option value="simplify steps">Simplify Instructions</option>
+  </select>
+
+  <button id="customizeBtn">Customize Recipe</button>
+
+  <h2>Customized Recipe</h2>
+  <textarea id="output" rows="15" cols="40" readonly></textarea>
+  <button id="copyBtn">Copy</button>
+  <button id="downloadBtn">Download</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
