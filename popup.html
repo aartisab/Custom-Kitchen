@@ -1,28 +1,64 @@
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Custom Kitchen</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 12px;
+      width: 300px;
+    }
+    .mode {
+      margin-bottom: 8px;
+    }
+    #param {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px;
+      margin-bottom: 12px;
+    }
+    #generate {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    #output {
+      width: 100%;
+      height: 120px;
+      box-sizing: border-box;
+      padding: 8px;
+      resize: vertical;
+    }
+  </style>
 </head>
 <body>
-  <h1>Custom Kitchen</h1>
-  <button id="extractBtn">Extract Recipe</button>
+  <div class="mode">
+    <label>
+      <input type="radio" name="mode" value="diet" checked>
+      Dietary Restriction
+    </label><br>
+    <label>
+      <input type="radio" name="mode" value="fusion">
+      Fusion
+    </label>
+  </div>
 
-  <select id="customizationSelect">
-    <option value="make this vegan">Make Vegan</option>
-    <option value="remove dairy ingredients">Remove Dairy</option>
-    <option value="make gluten-free">Make Gluten-Free</option>
-    <option value="simplify steps">Simplify Instructions</option>
-  </select>
+  <input
+    id="param"
+    type="text"
+    placeholder="e.g. vegan or Italian-fusion"
+  />
 
-  <button id="customizeBtn">Customize Recipe</button>
+  <button id="generate">Generate Prompt</button>
 
-  <h2>Customized Recipe</h2>
-  <textarea id="output" rows="15" cols="40" readonly></textarea>
-  <button id="copyBtn">Copy</button>
-  <button id="downloadBtn">Download</button>
+  <textarea
+    id="output"
+    readonly
+    placeholder="Your prompt will appear here…"
+  ></textarea>
 
   <script src="popup.js"></script>
 </body>
