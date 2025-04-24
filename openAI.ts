@@ -1,6 +1,5 @@
 //file for chatGPT api calls
-
-const apiKey = "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"
+//CURRENT NOT USING THIS
 
 export async function getChatGPTResponse(prompt: string, apiKey: string): Promise<string> {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
