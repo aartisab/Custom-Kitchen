@@ -3,35 +3,36 @@
 export interface RecipeData {
   title: string;
   ingredients: string[];
-  instructions: string;
+  instructions: string[];
 }
 
-/**
- * Scrapes a recipe from an AllRecipes page.
- * Returns RecipeData if found, or null.
- */
 export function extractAllRecipesRecipe(): RecipeData | null {
   try {
-    const title = document.querySelector("h1.headline.heading-content")?.textContent?.trim() || "Untitled Recipe";
+    const title = document.querySelector(".article-heading")?.textContent?.trim() || "Untitled Recipe";
 
-    const ingredients = Array.from(document.querySelectorAll("span.ingredients-item-name"))
+    const ingredients = Array.from(
+      document.querySelectorAll("ul.mm-recipes-structured-ingredients__list li")
+    )
       .map(el => el.textContent?.trim())
       .filter((text): text is string => !!text);
 
-    const instructions = Array.from(document.querySelectorAll("li.subcontainer.instructions-section-item div.section-body"))
+    const instructions = Array.from(
+      document.querySelectorAll("#mntl-sc-block_1-0 li")
+    )
       .map(el => el.textContent?.trim())
-      .filter((text): text is string => !!text && text.length > 5)
-      .join("\n\n");
+      .filter((text): text is string => !!text && text.length > 5);
 
     if (ingredients.length === 0 || instructions.length === 0) {
       console.warn("No ingredients or instructions found on AllRecipes page.");
       return null;
     }
 
+    console.log("Extracted Recipe:", { title, ingredients, instructions });
+
     return {
       title,
       ingredients,
-      instructions
+      instructions,
     };
   } catch (err) {
     console.error("Error scraping AllRecipes recipe:", err);

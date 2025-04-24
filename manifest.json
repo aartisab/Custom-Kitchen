@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "description": "Generate ChatGPT prompts to adapt AllRecipes recipes with dietary restrictions or fusion cuisines.",
   "permissions": [
-    "activeTab"
+    "activeTab", "scripting", "tabs"
   ],
   "host_permissions": [
-    "https://www.allrecipes.com/recipe/*"
+    "*://www.allrecipes.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -25,7 +25,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.allrecipes.com/recipe/*"
+        "*://www.allrecipes.com/*"
       ],
       "js": [
         "content.js"
