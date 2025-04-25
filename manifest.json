@@ -28,7 +28,7 @@
         "*://www.allrecipes.com/*"
       ],
       "js": [
-        "content.js"
+        "popup.js"
       ]
     }
   ]
