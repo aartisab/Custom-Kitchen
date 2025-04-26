@@ -49,7 +49,39 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById("output").value = `❌ Error: ${err.message}`;
     }
   });
+
+  document.getElementById("copy").addEventListener("click", () => {
+    const output = document.getElementById("output");
+    if (output.value.trim() !== "") {
+      navigator.clipboard.writeText(output.value)
+        .then(() => {
+          showToast("✅ Prompt copied to clipboard!");
+        })
+        .catch(err => {
+          console.error("Clipboard copy failed:", err);
+          showToast("❌ Failed to copy.");
+        });
+    } else {
+      showToast("⚠️ Nothing to copy yet!");
+    }
+  });
+  
+  // Toast helper function
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+    toast.classList.add("show");
+  
+    // Hide after 2 seconds
+    setTimeout(() => {
+      toast.classList.remove("show");
+      toast.classList.add("hidden");
+    }, 2000);
+  }
+  
 });
+
 
 function extractAllRecipesRecipe() {
   var _a, _b;

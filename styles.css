@@ -227,3 +227,30 @@ textarea#output:placeholder-shown {
     font-size: 20px;
   }
 }
+
+/* Toast Notification Styles */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary-dark);
+  color: white;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 999;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#toast.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+}
