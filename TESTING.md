@@ -5,6 +5,7 @@
 - Clicking "Generate" when not on a valid page (error handling).
 - Switching between "Diet" and "Fusion" modes and seeing different prompt generation behavior.
 - Inputting custom params (e.g., "vegan", "Korean") and verifying they appear in the output prompt.
+- Changing language and ensuring an added on for translation at the top of the prompt.
 - Clicking "Copy to Clipboard" after generating a prompt and verifying that it does get copied to clipboard.
 - After generating prompt, check to see that it is added to the history
 - Click "Clear history" and make sure it does so
@@ -16,8 +17,11 @@
 # Test Case 1: 
 - Recipe: https://www.allrecipes.com/recipe/268091/easy-korean-ground-beef-bowl/
 - Dietary Restriction: Vegan
+- Language: Chinese
   
 Correct Prompt:
+Translate the full recipe into Chinese:
+
 Modify this recipe to be "Vegan":
 
 Title: Easy Korean Beef Bowl
