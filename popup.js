@@ -16,8 +16,39 @@ document.addEventListener('DOMContentLoaded', function () {
       // Add timeout to prevent hanging if content script doesn't respond
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        function: extractAllRecipesRecipe
+        func: () => {
+          try {
+            const title = (document.querySelector(".article-heading")?.textContent || "Untitled Recipe").trim();
+            const ingredients = Array.from(document.querySelectorAll("ul.mm-recipes-structured-ingredients__list li"))
+              .map(el => el.textContent?.trim())
+              .filter(Boolean);
+            
+            const instructionsList = document.querySelector("#mntl-sc-block_1-0");
+            let instructions = [];
+      
+            if (instructionsList) {
+              const listItems = instructionsList.querySelectorAll("li");
+              instructions = Array.from(listItems)
+                .map(li => {
+                  const paragraphs = li.querySelectorAll("p[id^='mntl-sc-block_']");
+                  if (paragraphs.length > 0) {
+                    return Array.from(paragraphs).map(p => p.textContent.trim()).join(" ");
+                  } else {
+                    return li.textContent.trim();
+                  }
+                })
+                .filter(text => !!text && text.length > 5);
+            }
+      
+            if (ingredients.length === 0 || instructions.length === 0) return null;
+      
+            return { title, ingredients, instructions };
+          } catch (err) {
+            return null;
+          }
+        }
       });
+      
 
       const recipe = results[0]?.result;
 
@@ -49,6 +80,26 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       document.getElementById("output").value = prompt;
+
+
+
+      // Save prompt to history
+      const newEntry = {
+        timestamp: new Date().toLocaleString(),
+        customization: param,
+        mode,
+        language,
+        prompt
+      };
+      
+      chrome.storage.local.get({ history: [] }, (data) => {
+        const updatedHistory = [newEntry, ...data.history].slice(0, 10);
+        chrome.storage.local.set({ history: updatedHistory }, () => {
+          renderPromptHistory(updatedHistory);
+        });
+      });
+      
+      
     } catch (err) {
       console.error("Error in popup script:", err);
       document.getElementById("output").value = `❌ Error: ${err.message}`;
@@ -84,6 +135,57 @@ document.addEventListener('DOMContentLoaded', function () {
       toast.classList.add("hidden");
     }, 2000);
   }
+
+  function renderPromptHistory(history) {
+    const historyList = document.getElementById("historyList");
+    if (!historyList) return;
+  
+    historyList.innerHTML = "";
+  
+    if (!history || history.length === 0) {
+      historyList.innerHTML = "<p>No history yet.</p>";
+      return;
+    }
+  
+    history.forEach((entry, index) => {
+      const item = document.createElement("div");
+      item.className = "history-item";
+      item.style.marginBottom = "10px";
+  
+      item.innerHTML = `
+        <strong>${entry.timestamp} — ${entry.mode === "diet" ? "Diet: " : "Fusion: "}${entry.customization}</strong><br>
+        <pre style="white-space: pre-wrap; background: #f1f1f1; padding: 5px; border-radius: 5px;">${entry.prompt}</pre>
+        <button data-index="${index}" class="copy-history">Copy</button>
+      `;
+  
+      historyList.appendChild(item);
+    });
+  
+    document.querySelectorAll(".copy-history").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = btn.getAttribute("data-index");
+        const promptText = history[idx].prompt;
+        navigator.clipboard.writeText(promptText).then(() => {
+          alert("Copied from history!");
+        });
+      });
+    });
+  }
+  
+
+  // Call the function now that the DOM is ready
+  chrome.storage.local.get({ history: [] }, (data) => {
+    renderPromptHistory(data.history);
+  });
+
+
+  document.getElementById("clearHistoryBtn").addEventListener("click", () => {
+    chrome.storage.local.set({ history: [] }, () => {
+      renderPromptHistory([]);
+    });
+  });
+  
+  
 
 });
 
@@ -132,3 +234,5 @@ function extractAllRecipesRecipe() {
     return null;
   }
 }
+
+
