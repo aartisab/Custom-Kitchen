@@ -6,6 +6,8 @@
 - Switching between "Diet" and "Fusion" modes and seeing different prompt generation behavior.
 - Inputting custom params (e.g., "vegan", "Korean") and verifying they appear in the output prompt.
 - Clicking "Copy to Clipboard" after generating a prompt and verifying that it does get copied to clipboard.
+- After generating prompt, check to see that it is added to the history
+- Click "Clear history" and make sure it does so
 - Error handling when no recipe is scraped (shows error message).
 - Ensured Chrome runtime errors are caught and displayed in console without crashing the popup.
   
