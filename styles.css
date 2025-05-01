@@ -350,3 +350,24 @@ textarea#output:placeholder-shown {
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
   outline: none;
 }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.about-link {
+  font-size: 0.9rem;
+  color: var(--primary);
+  text-decoration: none;
+  margin-left: 1rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.about-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
