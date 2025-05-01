@@ -9,6 +9,7 @@
 - Clicking "Copy to Clipboard" after generating a prompt and verifying that it does get copied to clipboard.
 - After generating prompt, check to see that it is added to the history
 - Click "Clear history" and make sure it does so
+- Click "About" button and make sure it jumps to the Github
 - Error handling when no recipe is scraped (shows error message).
 - Ensured Chrome runtime errors are caught and displayed in console without crashing the popup.
   
@@ -19,7 +20,7 @@
 - Dietary Restriction: Vegan
 - Language: Chinese
   
-Correct Prompt:
+Correct and Actual:
 Translate the full recipe into Chinese:
 
 Modify this recipe to be "Vegan":
@@ -49,7 +50,7 @@ Instructions:
 - Cuisine: Korean
 - Language: English
   
-Correct Prompt:
+Correct and Actual Output:
 Fuse this recipe with "Korean" cuisine:
 
 Title: Cheesy Lasagna Sheet Pasta
