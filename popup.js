@@ -1,192 +1,113 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+  const genPage = document.getElementById('generate-page');
+  const histPage = document.getElementById('history-page');
+
+  document.getElementById('to-history').addEventListener('click', () => {
+    genPage.hidden = true;
+    histPage.hidden = false;
+    loadHistory();
+  });
+
+  document.getElementById('back').addEventListener('click', () => {
+    histPage.hidden = true;
+    genPage.hidden = false;
+  });
+
   document.getElementById("generate").addEventListener("click", async () => {
-    try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-      if (!tab || !tab.id) {
-        document.getElementById("output").value = "❌ No active tab found.";
-        return;
-      }
-
-      if (!tab.url.includes("allrecipes.com")) {
-        document.getElementById("output").value = "❌ This is not an AllRecipes page.";
-        return;
-      }
-      console.log("Active tab found:", tab);
-      // Add timeout to prevent hanging if content script doesn't respond
-      const results = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => {
-          try {
-            const title = (document.querySelector(".article-heading")?.textContent || "Untitled Recipe").trim();
-            const ingredients = Array.from(document.querySelectorAll("ul.mm-recipes-structured-ingredients__list li"))
-              .map(el => el.textContent?.trim())
-              .filter(Boolean);
-            
-            const instructionsList = document.querySelector("#mntl-sc-block_1-0");
-            let instructions = [];
-      
-            if (instructionsList) {
-              const listItems = instructionsList.querySelectorAll("li");
-              instructions = Array.from(listItems)
-                .map(li => {
-                  const paragraphs = li.querySelectorAll("p[id^='mntl-sc-block_']");
-                  if (paragraphs.length > 0) {
-                    return Array.from(paragraphs).map(p => p.textContent.trim()).join(" ");
-                  } else {
-                    return li.textContent.trim();
-                  }
-                })
-                .filter(text => !!text && text.length > 5);
-            }
-      
-            if (ingredients.length === 0 || instructions.length === 0) return null;
-      
-            return { title, ingredients, instructions };
-          } catch (err) {
-            return null;
-          }
-        }
-      });
-      
-
-      const recipe = results[0]?.result;
-
-      if (!recipe) {
-        document.getElementById("output").value =
-          "❌ Couldn't scrape recipe. Make sure you're on an AllRecipes recipe page.";
-        return;
-      }
-
-      const mode = document.querySelector('input[name="mode"]:checked').value;
-      const param = document.getElementById("param").value.trim();
-      const language = document.getElementById("language-select").value;
-      let prompt = "";
-
-      const translateLine = language !== 'English'
-        ? `Translate the full recipe into ${language}:\n\n`
-        : "";
-
-      if (mode === "diet") {
-        prompt = translateLine + `Modify this recipe to be "${param}":\n\n` +
-          `Title: ${recipe.title}\n` +
-          `Ingredients:\n- ${recipe.ingredients.join("\n- ")}\n` +
-          `Instructions:\n- ${recipe.instructions.join("\n- ")}`;
-      } else {
-        prompt = translateLine + `Fuse this recipe with "${param}" cuisine:\n\n` +
-          `Title: ${recipe.title}\n` +
-          `Ingredients:\n- ${recipe.ingredients.join("\n- ")}\n` +
-          `Instructions:\n- ${recipe.instructions.join("\n- ")}`;
-      }
-
-      document.getElementById("output").value = prompt;
-
-
-
-      // Save prompt to history
-      const newEntry = {
-        timestamp: new Date().toLocaleString(),
-        customization: param,
-        mode,
-        language,
-        prompt
-      };
-      
-      chrome.storage.local.get({ history: [] }, (data) => {
-        const updatedHistory = [newEntry, ...data.history].slice(0, 10);
-        chrome.storage.local.set({ history: updatedHistory }, () => {
-          renderPromptHistory(updatedHistory);
-        });
-      });
-      
-      
-    } catch (err) {
-      console.error("Error in popup script:", err);
-      document.getElementById("output").value = `❌ Error: ${err.message}`;
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab || !tab.id || !tab.url.includes("allrecipes.com")) {
+      return showToast("❌ This is not an AllRecipes page.");
     }
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: extractAllRecipesRecipe
+    });
+    const recipe = results[0]?.result;
+    if (!recipe) {
+      return showToast("❌ Could not extract recipe.");
+    }
+
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const param = document.getElementById("param").value.trim();
+    const language = document.getElementById("language-select").value;
+    const translateLine = language !== 'English'
+      ? `Translate the full recipe into ${language}:\n\n`
+      : "";
+
+    let prompt = translateLine;
+    if (mode === "diet") {
+      prompt += `Modify this recipe to be "${param}":\n\n` +
+        `Title: ${recipe.title}\n` +
+        `Ingredients:\n- ${recipe.ingredients.join("\n- ")}\n` +
+        `Instructions:\n- ${recipe.instructions.join("\n- ")}`;
+    } else {
+      prompt += `Fuse this recipe with "${param}" cuisine:\n\n` +
+        `Title: ${recipe.title}\n` +
+        `Ingredients:\n- ${recipe.ingredients.join("\n- ")}\n` +
+        `Instructions:\n- ${recipe.instructions.join("\n- ")}`;
+    }
+
+    document.getElementById("output").value = prompt;
+    showToast("✅ Prompt generated!");
+
+    chrome.storage.local.get({ history: [] }, ({ history }) => {
+      history.unshift({
+        time: new Date().toLocaleString(),
+        prompt
+      });
+      history = history.slice(0, 10);
+      chrome.storage.local.set({ history });
+    });
   });
 
   document.getElementById("copy").addEventListener("click", () => {
-    const output = document.getElementById("output");
-    if (output.value.trim() !== "") {
-      navigator.clipboard.writeText(output.value)
-        .then(() => {
-          showToast("✅ Prompt copied to clipboard!");
-        })
-        .catch(err => {
-          console.error("Clipboard copy failed:", err);
-          showToast("❌ Failed to copy.");
-        });
-    } else {
-      showToast("⚠️ Nothing to copy yet!");
-    }
+    const txt = document.getElementById("output").value;
+    if (!txt) return showToast("⚠️ No prompt to copy.");
+    navigator.clipboard.writeText(txt).then(() => showToast("✅ Prompt copied!"));
   });
 
-  // Toast helper function
-  function showToast(message) {
-    const toast = document.getElementById("toast");
-    toast.textContent = message;
-    toast.classList.remove("hidden");
-    toast.classList.add("show");
+  document.getElementById("clearHistory").addEventListener("click", () => {
+    chrome.storage.local.set({ history: [] }, loadHistory);
+  });
 
-    // Hide after 2 seconds
-    setTimeout(() => {
-      toast.classList.remove("show");
-      toast.classList.add("hidden");
-    }, 2000);
-  }
-
-  function renderPromptHistory(history) {
-    const historyList = document.getElementById("historyList");
-    if (!historyList) return;
-  
-    historyList.innerHTML = "";
-  
-    if (!history || history.length === 0) {
-      historyList.innerHTML = "<p>No history yet.</p>";
-      return;
-    }
-  
-    history.forEach((entry, index) => {
-      const item = document.createElement("div");
-      item.className = "history-item";
-      item.style.marginBottom = "10px";
-  
-      item.innerHTML = `
-        <strong>${entry.timestamp} — ${entry.mode === "diet" ? "Diet: " : "Fusion: "}${entry.customization}</strong><br>
-        <pre style="white-space: pre-wrap; background: #f1f1f1; padding: 5px; border-radius: 5px;">${entry.prompt}</pre>
-        <button data-index="${index}" class="copy-history btn secondary">Copy</button>
-      `;
-  
-      historyList.appendChild(item);
-    });
-  
-    document.querySelectorAll(".copy-history").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const idx = btn.getAttribute("data-index");
-        const promptText = history[idx].prompt;
-        navigator.clipboard.writeText(promptText).then(() => {
-          alert("Copied from history!");
+  function loadHistory() {
+    chrome.storage.local.get({ history: [] }, ({ history }) => {
+      const list = document.getElementById("historyList");
+      list.innerHTML = '';
+      if (!history.length) {
+        return list.textContent = 'No history yet.';
+      }
+      history.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `
+          <strong>${item.time}</strong>
+          <pre style="white-space:pre-wrap; background:#f1f1f1; padding:5px; border-radius:5px;">
+${item.prompt}
+          </pre>
+          <button data-i="${i}" class="btn secondary copy-hist">Copy</button>
+        `;
+        list.appendChild(div);
+      });
+      list.querySelectorAll('.copy-hist').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.getAttribute('data-i');
+          navigator.clipboard.writeText(history[idx].prompt);
         });
       });
     });
   }
-  
 
-  // Call the function now that the DOM is ready
-  chrome.storage.local.get({ history: [] }, (data) => {
-    renderPromptHistory(data.history);
-  });
+  function showToast(msg) {
+    const toast = document.getElementById(genPage.hidden ? 'toast-history' : 'toast');
+    toast.textContent = msg;
+    toast.classList.remove('hidden');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.replace('show', 'hidden'), 2000);
+  }
 
-
-  document.getElementById("clearHistoryBtn").addEventListener("click", () => {
-    chrome.storage.local.set({ history: [] }, () => {
-      renderPromptHistory([]);
-    });
-  });
-  
-  
-
+  document.getElementById('toast').classList.add('hidden');
+  document.getElementById('toast-history').classList.add('hidden');
 });
 
 

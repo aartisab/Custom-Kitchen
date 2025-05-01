@@ -7,64 +7,53 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="header">
-    <h1 class="title">
-      <img src="icons/icon48.png" alt="Kitchen icon" style="vertical-align: middle; margin-right: 8px;">
-      Custom Kitchen
-    </h1>
-    <a href="https://github.com/aartisab/Custom-Kitchen" class="about-link" target="_blank" rel="noopener noreferrer">About</a>
+  <div id="generate-page">
+    <div class="header">
+      <h1 class="title">
+        <img src="icons/icon48.png" alt="icon" style="vertical-align: middle; margin-right: 8px;">
+        Custom Kitchen
+      </h1>
+      <a href="https://github.com/aartisab/Custom-Kitchen" class="about-link" target="_blank">About</a>
+    </div>
+
+    <div class="mode">
+      <label><input type="radio" name="mode" value="diet" checked> Dietary Restriction</label><br>
+      <label><input type="radio" name="mode" value="fusion"> Cuisine Fusion</label>
+    </div>
+
+    <input id="param" type="text" placeholder="e.g. Vegan or Italian-fusion" />
+
+    <div class="language">
+      <label for="language-select">Select a language:</label>
+      <select id="language-select">
+        <option value="English">English</option>
+        <option value="Chinese">Chinese</option>
+        <option value="Japanese">Japanese</option>
+        <option value="French">French</option>
+        <option value="Spanish">Spanish</option>
+      </select>
+    </div>
+
+    <button id="generate" class="btn primary">Generate Prompt</button>
+
+    <textarea id="output" readonly placeholder="Your prompt will appear here…"></textarea>
+
+    <div class="buttons-row">
+      <button id="copy" class="btn secondary">Copy to Clipboard</button>
+      <button id="to-history" class="btn secondary">History</button>
+    </div>
+
+    <div id="toast" class="hidden"></div>
   </div>
-  <div class="mode">
-    <label>
-      <input type="radio" name="mode" value="diet" checked>
-      Dietary Restriction
-    </label><br>
-    <label>
-      <input type="radio" name="mode" value="fusion">
-      Cuisine Fusion
-    </label>
+
+  <div id="history-page" hidden>
+    <button id="back" class="btn secondary">← Back</button>
+    <h3>Prompt History</h3>
+    <div id="historyList" style="max-height:200px; overflow-y:auto;"></div>
+    <button id="clearHistory" class="btn danger">Clear History</button>
+    <div id="toast-history" class="hidden"></div>
   </div>
-  <input
-    id="param"
-    type="text"
-    placeholder="e.g. Vegan or Italian-fusion"
-  />
-
-  <div class="language">
-    <label for="language-select">Select a language: </label>
-    <select id="language-select">
-      <option value="English">English</option>
-      <option value="Chinese">Chinese</option>
-      <option value="Japanese">Japanese</option>
-      <option value="French">French</option>
-      <option value="Spanish">Spanish</option>
-    </select>
-  </div>
-
-  <button id="generate" class="btn primary">Generate Prompt</button>
-
-  <textarea
-    id="output"
-    readonly
-    placeholder="Your prompt will appear here…"
-  ></textarea>
-
-  <button id="copy" class="btn secondary">Copy to Clipboard</button>
-
-
-  <h3 style="margin-top: 20px;">Prompt History</h3>
-  <div id="historyList" class="mode" style="max-height: 200px; overflow-y: auto;"></div>
-  <button id="clearHistoryBtn" class="btn danger">Clear History</button>
-
-
 
   <script src="popup.js"></script>
-
-    <!-- Toast notification container -->
-  <div id="toast" class="hidden"></div>
-
-  <script src="popup.js"></script>
-
-  
 </body>
 </html>
