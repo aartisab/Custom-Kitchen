@@ -10,7 +10,7 @@ Custom Kitchen is a Chrome Extension that aims to help the everyday chef! You ar
 ## Feature list and team member responsibilities
 - Scraper and About Button: Dominic Chang
 - Copy Button and Github Pages: Aarti Sabharwal
-- Translation Feature: Minyu Deng
+- Translation Feature and Change the history to different bar: Minyu Deng
 - Scraper History: Malcolm Wengel
 
 ## Known bugs or incomplete features
