@@ -15,3 +15,7 @@ Custom Kitchen is a Chrome Extension that aims to help the everyday chef! You ar
 
 ## Known bugs or incomplete features
 - None so far!
+
+## Future Work
+- Actually integrate a ChatGPT backend to then return the modified recipe
+- Adding more features like macro tracker among many others
