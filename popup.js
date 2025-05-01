@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
       item.innerHTML = `
         <strong>${entry.timestamp} — ${entry.mode === "diet" ? "Diet: " : "Fusion: "}${entry.customization}</strong><br>
         <pre style="white-space: pre-wrap; background: #f1f1f1; padding: 5px; border-radius: 5px;">${entry.prompt}</pre>
-        <button data-index="${index}" class="copy-history">Copy</button>
+        <button data-index="${index}" class="copy-history btn secondary">Copy</button>
       `;
   
       historyList.appendChild(item);

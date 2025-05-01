@@ -18,24 +18,24 @@
       Cuisine Fusion
     </label>
   </div>
-  <div class="language">
-    <label for="language-select">language-select: </label>
-    <select id="language-select">
-      <option value="Chinese">Chinese</option>
-      <option value="English">English</option>
-      <option value="Japanese">Japanese</option>
-      <option value="French">French</option>
-      <option value="Spanish">Spanish</option>
-    </select>
-  </div>
-
   <input
     id="param"
     type="text"
     placeholder="e.g. Vegan or Italian-fusion"
   />
 
-  <button id="generate">Generate Prompt</button>
+  <div class="language">
+    <label for="language-select">Select a language: </label>
+    <select id="language-select">
+      <option value="English">English</option>
+      <option value="Chinese">Chinese</option>
+      <option value="Japanese">Japanese</option>
+      <option value="French">French</option>
+      <option value="Spanish">Spanish</option>
+    </select>
+  </div>
+
+  <button id="generate" class="btn primary">Generate Prompt</button>
 
   <textarea
     id="output"
@@ -43,12 +43,12 @@
     placeholder="Your prompt will appear here…"
   ></textarea>
 
-  <button id="copy" style="margin-top: 8px;">Copy to Clipboard</button>
+  <button id="copy" class="btn secondary">Copy to Clipboard</button>
 
 
   <h3 style="margin-top: 20px;">Prompt History</h3>
   <div id="historyList" class="mode" style="max-height: 200px; overflow-y: auto;"></div>
-  <button id="clearHistoryBtn">Clear History</button>
+  <button id="clearHistoryBtn" class="btn danger">Clear History</button>
 
 
 

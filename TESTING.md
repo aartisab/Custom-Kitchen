@@ -47,6 +47,7 @@ Instructions:
 # Test Case 2: 
 - Recipe: https://www.allrecipes.com/cheesy-lasagna-sheet-pasta-recipe-11703403
 - Cuisine: Korean
+- Language: English
   
 Correct Prompt:
 Fuse this recipe with "Korean" cuisine:
