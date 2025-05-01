@@ -8,10 +8,14 @@ Custom Kitchen is a Chrome Extension that aims to help the everyday chef! You ar
 - Enjoy!
 
 ## Feature list and team member responsibilities
-- Scraper and UI: Dominic Chang
-- Copy Button: Aarti Sabharwal
+- Scraper and About Button: Dominic Chang
+- Copy Button and Github Pages: Aarti Sabharwal
 - Translation Feature: Minyu Deng
 - Scraper History: Malcolm Wengel
 
 ## Known bugs or incomplete features
 - None so far!
+
+## Future Work
+- Actually integrate a ChatGPT backend to then return the modified recipe
+- Adding more features like macro tracker among many others

@@ -71,12 +71,12 @@ document.addEventListener('DOMContentLoaded', function () {
         prompt = translateLine + `Modify this recipe to be "${param}":\n\n` +
           `Title: ${recipe.title}\n` +
           `Ingredients:\n- ${recipe.ingredients.join("\n- ")}\n` +
-          `Instructions:\n1. ${recipe.instructions.join("\n- ")}`;
+          `Instructions:\n- ${recipe.instructions.join("\n- ")}`;
       } else {
         prompt = translateLine + `Fuse this recipe with "${param}" cuisine:\n\n` +
           `Title: ${recipe.title}\n` +
           `Ingredients:\n- ${recipe.ingredients.join("\n- ")}\n` +
-          `Instructions:\n1. ${recipe.instructions.join("\n- ")}`;
+          `Instructions:\n- ${recipe.instructions.join("\n- ")}`;
       }
 
       document.getElementById("output").value = prompt;
